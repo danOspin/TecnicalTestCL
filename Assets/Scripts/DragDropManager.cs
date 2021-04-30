@@ -50,36 +50,23 @@ public class DragDropManager : MonoBehaviour
     public void ValidationSecondScreen()
     {
         panel.SetActive(true);
-       finalMessage.text = "";
-       List <Student> mistakesApproval = new List<Student>();
-        List<Student> mistakesRejected = new List<Student>();
+        finalMessage.text = "";
 
-        foreach (Student s in approvalStudents)
-        {
-            if (s.studentGrade < 3.0f || s.status != Status.Approved)
-            {
-                mistakesApproval.Add(s);
-            }
-        }
-        foreach (Student s in rejectedStudents)
-        {
-            if (s.studentGrade > 3.0f || s.status != Status.Rejected)
-            {
-                mistakesRejected.Add(s);
-            }
-        }
+        int mistakesOnApproval = approvalStudents.Where(x => x.studentGrade < 3.0f || x.status != Status.Approved).Count();
+        int mistakesOnRejected = rejectedStudents.Where(x => x.studentGrade > 3.0f || x.status != Status.Rejected).Count();
 
-        if (mistakesApproval.Count()>0)
+
+        if (mistakesOnApproval>0)
         {
-            finalMessage.text = "Tras la segunda revision, se encuentran: "+ mistakesApproval.Count()+" inconsistencias en el grupo de estudiantes aprobados."; 
+            finalMessage.text = "Tras la segunda revision, se encuentran: "+ mistakesOnApproval + " inconsistencias en el grupo de estudiantes aprobados.\n"; 
 
         }
-        if (mistakesRejected.Count > 0)
+        if (mistakesOnRejected > 0)
         {
-            finalMessage.text = "Uy Profe, Subame la nota. \nTras la segunda revision, se encuentran: "+mistakesRejected.Count() + " inconsistencias en el grupo de estudiantes rechazados.";
+            finalMessage.text += "Uy Profe, Subame la nota. \nTras la segunda revision, se encuentran: "+ mistakesOnRejected + " inconsistencias en el grupo de estudiantes rechazados.";
         }
 
-        if (mistakesApproval.Count() == 0 && mistakesRejected.Count()==0 && neutralStudents.Count()==0)
+        if (mistakesOnApproval == 0 && mistakesOnRejected ==0 && neutralStudents.Count()==0)
         {
             finalMessage.text = "Hora de tomar cafe. \nLos estudiantes han sido evaluados correctamente.";
         }
@@ -87,6 +74,9 @@ public class DragDropManager : MonoBehaviour
         {
             finalMessage.text = "Aun faltan estudiantes por revisar.";
         }
+
+        
+
 
     }
 

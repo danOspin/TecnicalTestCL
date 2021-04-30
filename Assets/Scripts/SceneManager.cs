@@ -31,7 +31,6 @@ public class SceneManager : MonoBehaviour
     List<Student> studentBlackList = new List<Student>();
     StudentsJson studentsInJson;
 
-    List<Student> wrongList;
     bool alreadyActive=false;
 
     // Start is called before the first frame update
@@ -121,7 +120,7 @@ public class SceneManager : MonoBehaviour
 
     public void NextScreen()
     {
-        if (wrongList.Count()>0)
+        if (studentsList.Where(x => x.IsinWrongPlace()).Count()> 0)
         {
             message.SetActive(false);
         }
@@ -136,33 +135,30 @@ public class SceneManager : MonoBehaviour
     }
 
 
+
     public void ValidateTable()
     {
-        wrongList = new List<Student>();
-        foreach(Student s in studentsList)
-        {
-            if (s.IsinWrongPlace())
-            {
-                wrongList.Add(s);
-            }
-        }
-        if (wrongList.Count()>0)
-        {
-            message.GetComponentInChildren<TextMeshProUGUI>().text = "Revisar la tabla nuevamente. \nActualmente hay "+ wrongList.Count() +" estudiantes con las casillas incorrectas";
-            
+        int wrongListStudents = studentsList.Where(x => x.IsinWrongPlace()).Count();
 
+
+        int studentsBlackList = studentBlackList.Where(x => x.studentGrade == 0 || string.IsNullOrEmpty(x.studentID)).Count();
+
+        if (wrongListStudents > 0)
+        {
+            message.GetComponentInChildren<TextMeshProUGUI>().text = "Revisar la tabla nuevamente. \nActualmente hay "+ wrongListStudents + " estudiantes con las casillas incorrectas";
         }
         else
         {
             message.GetComponentInChildren<TextMeshProUGUI>().text = "Los estudiantes están en con las opciones correctas. Puede continuar.";
         }
 
-        if (studentBlackList.Count() > 0)
+        if (studentsBlackList > 0)
         {
             message.GetComponentInChildren<TextMeshProUGUI>().text += "\n\nPor favor, revisar el archivo de origen. Hay unos estudiantes con datos incompletos.";
         }
         message.gameObject.SetActive(true);
 
+       
     }
 
     
